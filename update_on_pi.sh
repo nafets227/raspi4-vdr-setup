@@ -4,10 +4,12 @@
 # for discussion see https://www.vdr-portal.de/forum/index.php?thread/132858-raspberry-pi-4b-unterstützung/
 
 function piwozi-updatesysconfig {
-	sudo rpi-update &&
+	sudo SKIP_WARNING=1 rpi-update &&
 
-	sudo cat >>/boot/config.txt <<-EOF &&
-		# Stefan Schallenberg 2.1.2021
+	# we replace existing /boot/config.txt, default can be restored by deleting and
+	# reinstalling the package raspberrypi-bootloader
+	sudo bash -c "cat >/boot/config.txt" <<-EOF &&
+		# Version by Stefan Schallenberg install script
 		#### comment dtoverlay=vc4-fkms-3d above
 		dtoverlay=vc4-kms-v3d-pi4,cma-512
 		dtoverlay=rpivid-v4l2
@@ -18,10 +20,21 @@ function piwozi-updatesysconfig {
 
 	# disabble resize root fs that is failing on NFS root
 	sudo update-rc.d resizfe2fs_once remove &&
-	sudo rm /etc/init.d/resize2fs_once &&
+	true || return 1
 
-	git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --single-branch &&
-	cd linux && 
+	[ ! -f /etc/init.d/resizfe2fs_once ] ||
+	sudo rm /etc/init.d/resize2fs_once || return 1
+
+	if ! [ -d linux ] ; then
+		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --single-branch &&
+		cd linux &&
+		true || return 1
+	else
+		cd linux &&
+		git pull --ff-only &&
+		true || return 1
+	fi
+
 	sudo make headers_install INSTALL_HDR_PATH=/usr && 
 	cd .. &&
 
@@ -37,7 +50,6 @@ function piwozi-updatesysconfig {
 # call as pi in its home directory!
 function piwozi-rebuild-fmpeg {
 
-
 	# enable source handling with apt
 	if ! fgrep "Stefan Schallenberg" /etc/apt/sources.list ; then
 		sudo cat >>/etc/apt/sources.list <<-EOF &&
@@ -48,8 +60,9 @@ function piwozi-rebuild-fmpeg {
 		true || return 1
 	fi
 
-	# install prereqs of standard Debian package
-	sudo apt-get build-dep ffmpeg &&
+# no longer needed:
+#	# install prereqs of standard Debian package
+#	sudo apt-get build-dep ffmpeg &&
 
 	# additional prereq: librtmp
 	sudo apt-get install librtmp-dev &&
@@ -254,15 +267,6 @@ function piwozi-rebuild-fmpeg {
 function piwozi-install-vdr {
 	sudo apt install vdr vdr-dev &&
 
-	if ! grep "/var/lib/video" /etc/fstab ; then
-		mkdir -p /var/lib/video.save &&
-		sudo cat >>/etc/fstab <<-EOF &&
-			phys.intranet.nafets.de:/vdr/video.store /var/lib/video nfs rsize=32768,wsize=32768,async 0 0
-			phys.intranet.nafets.de:/vdr/video.save /var/lib/video.save nfs rsize=32768,wsize=32768,async 0 0
-			EOF
-		true || return 1
-	fi
-
 	# vdr-plugin-softhddevice-drm needs libchromaprint1
 
 	# Alternative to compiling chromaprint is to patch /var/lib/dpkg/status
@@ -272,15 +276,15 @@ function piwozi-install-vdr {
 	# warning about no being able to configure packages can be ignored
 
 	# But for now we compile chromaprint:
-	sudo apt-install cmake || return 1
-	if ! [ -d vdr-plugin-softhddevice-drm ] ; then
+	sudo apt-get install cmake || return 1
+	if ! [ -d chromaprint ] ; then
 		git clone https://github.com/acoustid/chromaprint.git &&
-		cd chromaprinti &&
-		true || return 1
+		cd chromaprint &&
+		true || return 1
 	else
 		cd chromaprint &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 	cmake -DHAVE_AV_FRAME_ALLOC=1 -DHAVE_AV_FRAME_FREE=1 . &&
 	make -j${nproc} &&
@@ -319,8 +323,7 @@ function piwozi-install-vdradmin {
 		true || return 1
 	fi
 
-	sudo mkdir /etc/vdradmin /var/cache/vdradmin /var/log/vdradmin /var/run/vdradmin &&
-	sudo cat >/etc/vdradmin/vdradmind.conf <<-EOF &&
+	sudo bash -c "cat >/etc/vdradmin/vdradmind.conf" <<-EOF &&
 		PASSWORD = linvdr
 		USERNAME = linvdr
 		VDRCONFDIR = /var/lib/vdr
@@ -329,19 +332,20 @@ function piwozi-install-vdradmin {
 		VIDEODIR = /var/lib/video
 		EOF
 
-	sudo cat >/etc/systemd/system/vdradmin-am.service <<-EOF &&
+	sudo bash -c "cat >/etc/systemd/system/vdradmin-am.service" <<-EOF &&
 		[Unit]
 		Description=VDRAdmin-AM
 		After=vdr.service
 
 		[Service]
 		User=vdr
-		ExecStartPre=mkdir -p /run/vdradmin
+		ExecStartPre=mkdir -p /run/vdradmin /etc/vdradmin /var/cache/vdradmin /var/log/vdradmin /var/run/vdradmin
 		ExecStart=/usr/bin/vdradmind -n
 
 		[Install]
 		WantedBy=multi-user.target
 		EOF
+	sudo rm -rf /usr/share/vdradmin &&
 	sudo ./install.sh &&
 	true || return 1
 
@@ -350,19 +354,23 @@ function piwozi-install-vdradmin {
 }
 
 function piwozi-sysconfig {
-	sudo groupmod -g 666 vdr
-	sudo usermod -u 666 vdr
+	sudo groupmod -g 666 vdr &&
+	sudo usermod -u 666 vdr &&
 
+	sudo groupmems -g audio -l | grep vdr || \
 	sudo groupmems -g audio -a vdr &&
 	
-	cat >/etc/vdr/conf.d/99-nafets.conf <<-EOF &&
+	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]
 		EOF
 
+	true || return 1
+
+	return 0
 }
 
 function piwozi-patch {
-	cat >/lib/udev/rules.d/91-pulseaudio-rpi.rules <<-EOF &&
+	sudo bash -c "cat >/lib/udev/rules.d/91-pulseaudio-rpi.rules" <<-EOF &&
 		SUBSYSTEM!="sound*", GOTO="end"
 		ACTION!="change", GOTO="end"
 		KERNEL!="card*", GOTO="end"
@@ -375,7 +383,7 @@ function piwozi-patch {
 		LABEL="end"
 		EOF
 
-	cat >/usr/share/alsa/cards/vc4-hdmi.conf <<-EOF &&
+	sudo bash -c "cat >/usr/share/alsa/cards/vc4-hdmi.conf" <<-EOF &&
 		# Configuration for the VC4-HDMI sound card using software IEC958
 		# subframe conversion
 
@@ -451,4 +459,21 @@ function piwozi-patch {
 
 ##### main ####################################################################
 
-# do nothing
+pushd "$HOME"
+piwozi-updatesysconfig &&
+piwozi-patch &&
+piwozi-rebuild-fmpeg &&
+piwozi-install-vdr &&
+piwozi-sysconfig &&
+piwozi-install-vdradmin
+
+rc=$?
+popd
+
+if [ "$rc" -eq 0 ] ; then
+	printf "==== %s ended successfully =====\n" "$0"
+	exit 0
+else
+	printf "===== %s ended in ERROR =====\n" "$0"
+	exit 1
+fi

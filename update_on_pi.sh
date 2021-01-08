@@ -338,7 +338,8 @@ function piwozi-install-vdradmin {
 		After=vdr.service
 
 		[Service]
-		User=vdr
+		# run as root user to enable creating needed directories.
+		# User=vdr
 		ExecStartPre=mkdir -p /run/vdradmin /etc/vdradmin /var/cache/vdradmin /var/log/vdradmin /var/run/vdradmin
 		ExecStart=/usr/bin/vdradmind -n
 

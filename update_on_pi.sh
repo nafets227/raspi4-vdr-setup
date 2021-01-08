@@ -384,7 +384,7 @@ function piwozi-patch {
 		LABEL="end"
 		EOF
 
-	sudo bash -c "cat >/usr/share/alsa/cards/vc4-hdmi.conf" <<-EOF &&
+	sudo bash -c "cat >/usr/share/alsa/cards/vc4-hdmi.conf" <<-"EOF" &&
 		# Configuration for the VC4-HDMI sound card using software IEC958
 		# subframe conversion
 

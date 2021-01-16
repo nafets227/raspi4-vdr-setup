@@ -35,7 +35,7 @@ function piwozi-updatesysconfig {
 		true || return 1
 	fi
 
-	sudo make headers_install INSTALL_HDR_PATH=/usr && 
+	sudo make headers_install INSTALL_HDR_PATH=/usr &&
 	cd .. &&
 
 	true || return 1
@@ -44,7 +44,7 @@ function piwozi-updatesysconfig {
 }
 
 ##### Build and install updated FFMpeg #######################################
-# @TODO maybe create an own Debian package. See 
+# @TODO maybe create an own Debian package. See
 # Debian package git: https://salsa.debian.org/multimedia-team/ffmpeg.git
 # for the official debian package as base.
 # call as pi in its home directory!
@@ -83,7 +83,7 @@ function piwozi-rebuild-fmpeg {
 	make -j$(nproc) &&
 	sudo make install &&
 	cd .. || return 1
-	
+
 	# additional prereq: kvazaar
 	if ! [ -d kvazaar ] ; then
 		git clone https://github.com/ultravideo/kvazaar.git &&
@@ -271,7 +271,7 @@ function piwozi-install-vdr {
 
 	# Alternative to compiling chromaprint is to patch /var/lib/dpkg/status
 	# to delete dependencies to libav* of libchromaprint
-	# libchromaprint1 and libchromaprint-dev can then be installed using 
+	# libchromaprint1 and libchromaprint-dev can then be installed using
 	# apt-get download ... ; dpkg -i ...
 	# warning about no being able to configure packages can be ignored
 
@@ -360,7 +360,7 @@ function piwozi-sysconfig {
 
 	sudo groupmems -g audio -l | grep vdr || \
 	sudo groupmems -g audio -a vdr &&
-	
+
 	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]
 		EOF

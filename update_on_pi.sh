@@ -52,7 +52,7 @@ function piwozi-rebuild-fmpeg {
 
 	# enable source handling with apt
 	if ! fgrep "Stefan Schallenberg" /etc/apt/sources.list ; then
-		sudo cat >>/etc/apt/sources.list <<-EOF &&
+		sudo bash -c "cat >>/etc/apt/sources.list" <<-EOF &&
 			# Stefan Schallenberg 2.1.2021
 			deb-src http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi
 			EOF

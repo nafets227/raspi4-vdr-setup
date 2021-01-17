@@ -368,6 +368,19 @@ function piwozi-sysconfig {
 		[softhddevice-drm]
 		EOF
 
+	sudo bash -c "cat >/etc/sudoers.d/011_vdrshutdown" <<-EOF &&
+		vdr ALL=(ALL) NOPASSWD: ALL
+		EOF
+
+	sudo bash -c "cat >/etc/vdr/shutdown-hooks/S90.custom" <<-EOF &&
+		printf "SHUTDOWNCMD='sudo systemctl poweroff'"
+		exit 0
+		EOF
+
+	# @TODO set in /etc/vdr/setup.conf
+	# MinEventTimeout = 0
+	# MinUserInactivity = 0
+
 	true || return 1
 
 	return 0

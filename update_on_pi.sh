@@ -64,6 +64,9 @@ function piwozi-rebuild-fmpeg {
 #	# install prereqs of standard Debian package
 #	sudo apt-get build-dep ffmpeg &&
 
+	# install needed tools
+	sudo apt-get install autoconf libtool &&
+
 	# additional prereq: librtmp
 	sudo apt-get install librtmp-dev &&
 

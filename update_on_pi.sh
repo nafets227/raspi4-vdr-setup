@@ -79,7 +79,7 @@ function piwozi-rebuild-fmpeg {
 		true || return 1
 	fi
 	[ -e ./configure ] || ./autogen.sh || return 1
-	[ -e Makefile ] || ./configure --enable-shared || return 1
+	[ -e Makefile ] || ./configure --enable-shared || return 1
 	make -j$(nproc) &&
 	sudo make install &&
 	cd .. || return 1

@@ -28,7 +28,7 @@ function piwozi-updatesysconfig {
 	if ! [ -d linux ] ; then
 		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --single-branch &&
 		cd linux &&
-		true || return 1
+		true || return 1
 	else
 		cd linux &&
 		git pull --ff-only &&
@@ -75,11 +75,11 @@ function piwozi-rebuild-fmpeg {
 	if ! [ -d fdk-aac ] ; then
 		git clone https://github.com/mstorsjo/fdk-aac.git &&
 		cd fdk-aac &&
-		true || return 1
+		true || return 1
 	else
 		cd fdk-aac &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 	[ -e ./configure ] || ./autogen.sh || return 1
 	[ -e Makefile ] || ./configure --enable-shared || return 1
@@ -91,14 +91,14 @@ function piwozi-rebuild-fmpeg {
 	if ! [ -d kvazaar ] ; then
 		git clone https://github.com/ultravideo/kvazaar.git &&
 		cd kvazaar &&
-		true || return 1
+		true || return 1
 	else
 		cd kvazaar &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 	[ -e ./configure ] || ./autogen.sh || return 1
-	[ -e Makefile ] || ./configure --enable-shared || return 1
+	[ -e Makefile ] || ./configure --enable-shared || return 1
 	make -j$(nproc) &&
 	sudo make install &&
 	cd .. || return 1
@@ -107,14 +107,14 @@ function piwozi-rebuild-fmpeg {
 	if ! [ -d zimg ] ; then
 		git clone https://github.com/sekrit-twc/zimg.git &&
 		cd zimg &&
-		true || return 1
+		true || return 1
 	else
 		cd zimg &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 	[ -e ./configure ] || ./autogen.sh || return 1
-	[ -e Makefile ] || ./configure --enable-shared || return 1
+	[ -e Makefile ] || ./configure --enable-shared || return 1
 	make -j$(nproc) &&
 	sudo make install &&
 	cd .. || return 1
@@ -125,11 +125,11 @@ function piwozi-rebuild-fmpeg {
 			--branch dev/4.3.1/drm_prime_1 \
 			--single-branch &&
 		cd rpi-ffmpeg &&
-		true || return 1
+		true || return 1
 	else
 		cd rpi-ffmpeg &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 #	       	--libdir=/usr/lib/arm-linux-gnueabihf
 #	       	--cpu=arm1176jzf-s
@@ -300,11 +300,11 @@ function piwozi-install-vdr {
 	if ! [ -d vdr-plugin-softhddevice-drm ] ; then
 		git clone https://github.com/zillevdr/vdr-plugin-softhddevice-drm.git &&
 		cd vdr-plugin-softhddevice-drm &&
-		true || return 1
+		true || return 1
 	else
 		cd vdr-plugin-softhddevice-drm &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 
 	make -j${nproc} &&
@@ -319,11 +319,11 @@ function piwozi-install-vdradmin {
 	if ! [ -d vdradmin-am ] ; then
 		git clone https://projects.vdr-developer.org/git/vdradmin-am.git
 		cd vdradmin-am &&
-		true || return 1
+		true || return 1
 	else
 		cd vdradmin-am &&
 		git pull --ff-only &&
-		true || return 1
+		true || return 1
 	fi
 
 	sudo bash -c "cat >/etc/vdradmin/vdradmind.conf" <<-EOF &&

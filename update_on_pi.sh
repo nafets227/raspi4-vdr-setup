@@ -146,7 +146,7 @@ function piwozi-rebuild-fmpeg {
 #--extra-libs="-lpthread -lm -latomic -lbcm_host -lvcos -lvchiq_arm" \
 #--extra-ldflags="-L/usr/local/lib -L/opt/vc/lib" \
 #		-lvcos -lvchiq_arm" \
-	[ -e Makefile ] || ./configure \
+	[ -e config.h ] || ./configure \
 		--extra-version='-rpi+beta' \
 		--extra-ldflags="-L/opt/vc/lib" \
 		--extra-libs="-lbcm_host -lvcos" \

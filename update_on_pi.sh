@@ -80,6 +80,29 @@ function piwozi-rebuild-fmpeg {
 		&&
 
 	true || return 1
+
+	# Alternative to compiling chromaprint is to patch /var/lib/dpkg/status
+	# to delete dependencies to libav* of libchromaprint
+	# libchromaprint1 and libchromaprint-dev can then be installed using
+	# apt-get download ... ; dpkg -i ...
+	# warning about no being able to configure packages can be ignored
+
+	# But for now we compile chromaprint:
+	sudo apt-get install cmake || return 1
+	if ! [ -d chromaprint ] ; then
+		git clone https://github.com/acoustid/chromaprint.git &&
+		cd chromaprint &&
+		true || return 1
+	else
+		cd chromaprint &&
+		git pull --ff-only &&
+		true || return 1
+	fi
+	cmake -DHAVE_AV_FRAME_ALLOC=1 -DHAVE_AV_FRAME_FREE=1 . &&
+	make -j${nproc} &&
+	sudo make install &&
+	cd .. &&
+
 	# additional prereq: fdk-aac
 	if ! [ -d fdk-aac ] ; then
 		git clone https://github.com/mstorsjo/fdk-aac.git --depth 10 &&
@@ -281,28 +304,6 @@ function piwozi-install-vdr {
 	sudo apt install vdr vdr-dev &&
 
 	# vdr-plugin-softhddevice-drm needs libchromaprint1
-
-	# Alternative to compiling chromaprint is to patch /var/lib/dpkg/status
-	# to delete dependencies to libav* of libchromaprint
-	# libchromaprint1 and libchromaprint-dev can then be installed using
-	# apt-get download ... ; dpkg -i ...
-	# warning about no being able to configure packages can be ignored
-
-	# But for now we compile chromaprint:
-	sudo apt-get install cmake || return 1
-	if ! [ -d chromaprint ] ; then
-		git clone https://github.com/acoustid/chromaprint.git --depth 10 &&
-		cd chromaprint &&
-		true || return 1
-	else
-		cd chromaprint &&
-		git pull --ff-only &&
-		true || return 1
-	fi
-	cmake -DHAVE_AV_FRAME_ALLOC=1 -DHAVE_AV_FRAME_FREE=1 . &&
-	make -j${nproc} &&
-	sudo make install &&
-	cd .. &&
 
 	true || return 1
 

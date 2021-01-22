@@ -67,10 +67,17 @@ function piwozi-rebuild-fmpeg {
 #	sudo apt-get build-dep ffmpeg &&
 
 	# install needed tools
-	sudo apt-get install autoconf libtool &&
-
 	# additional prereq: librtmp
-	sudo apt-get install librtmp-dev &&
+	sudo apt-get install \
+		autoconf \
+		frei0r-plugins-dev \
+		ladspa-sdk \
+		libaom-dev \
+		libc6-dev \
+		libcdio-paranoia-dev \
+		librtmp-dev \
+		libtool \
+		&&
 
 	true || return 1
 	# additional prereq: fdk-aac

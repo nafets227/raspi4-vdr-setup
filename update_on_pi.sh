@@ -26,7 +26,7 @@ function piwozi-updatesysconfig {
 	sudo rm /etc/init.d/resize2fs_once || return 1
 
 	if ! [ -d linux ] ; then
-		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --single-branch &&
+		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --depth 10 &&
 		cd linux &&
 		true || return 1
 	else
@@ -73,7 +73,7 @@ function piwozi-rebuild-fmpeg {
 	true || return 1
 	# additional prereq: fdk-aac
 	if ! [ -d fdk-aac ] ; then
-		git clone https://github.com/mstorsjo/fdk-aac.git &&
+		git clone https://github.com/mstorsjo/fdk-aac.git --depth 10 &&
 		cd fdk-aac &&
 		true || return 1
 	else
@@ -89,7 +89,7 @@ function piwozi-rebuild-fmpeg {
 
 	# additional prereq: kvazaar
 	if ! [ -d kvazaar ] ; then
-		git clone https://github.com/ultravideo/kvazaar.git &&
+		git clone https://github.com/ultravideo/kvazaar.git --depth 10 &&
 		cd kvazaar &&
 		true || return 1
 	else
@@ -105,7 +105,7 @@ function piwozi-rebuild-fmpeg {
 
 	# additional prereq: zimg
 	if ! [ -d zimg ] ; then
-		git clone https://github.com/sekrit-twc/zimg.git &&
+		git clone https://github.com/sekrit-twc/zimg.git --depth 10 &&
 		cd zimg &&
 		true || return 1
 	else
@@ -122,8 +122,9 @@ function piwozi-rebuild-fmpeg {
 	##### now ffmpeg itself ##########
 	if ! [ -d rpi-ffmpeg ] ; then
 		git clone https://github.com/jc-kynesim/rpi-ffmpeg.git \
+			--depth 10 \
 			--branch dev/4.3.1/drm_prime_1 \
-			--single-branch &&
+			&&
 		cd rpi-ffmpeg &&
 		true || return 1
 	else
@@ -281,7 +282,7 @@ function piwozi-install-vdr {
 	# But for now we compile chromaprint:
 	sudo apt-get install cmake || return 1
 	if ! [ -d chromaprint ] ; then
-		git clone https://github.com/acoustid/chromaprint.git &&
+		git clone https://github.com/acoustid/chromaprint.git --depth 10 &&
 		cd chromaprint &&
 		true || return 1
 	else
@@ -298,7 +299,7 @@ function piwozi-install-vdr {
 
 
 	if ! [ -d vdr-plugin-softhddevice-drm ] ; then
-		git clone https://github.com/zillevdr/vdr-plugin-softhddevice-drm.git &&
+		git clone https://github.com/zillevdr/vdr-plugin-softhddevice-drm.git --depth 10 &&
 		cd vdr-plugin-softhddevice-drm &&
 		true || return 1
 	else
@@ -317,7 +318,7 @@ function piwozi-install-vdr {
 
 function piwozi-install-vdradmin {
 	if ! [ -d vdradmin-am ] ; then
-		git clone https://projects.vdr-developer.org/git/vdradmin-am.git
+		git clone https://projects.vdr-developer.org/git/vdradmin-am.git --depth 10 &&
 		cd vdradmin-am &&
 		true || return 1
 	else

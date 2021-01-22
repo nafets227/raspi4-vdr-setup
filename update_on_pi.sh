@@ -25,6 +25,8 @@ function piwozi-updatesysconfig {
 	[ ! -f /etc/init.d/resizfe2fs_once ] ||
 	sudo rm /etc/init.d/resize2fs_once || return 1
 
+	sudo apt-get install git || return 1
+
 	if ! [ -d linux ] ; then
 		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --depth 10 &&
 		cd linux &&

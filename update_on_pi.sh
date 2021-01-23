@@ -327,7 +327,7 @@ function piwozi-install-vdr {
 
 function piwozi-install-vdradmin {
 	if ! [ -d vdradmin-am ] ; then
-		git clone https://projects.vdr-developer.org/git/vdradmin-am.git --depth 10 &&
+		git clone https://projects.vdr-developer.org/git/vdradmin-am.git &&
 		cd vdradmin-am &&
 		true || return 1
 	else

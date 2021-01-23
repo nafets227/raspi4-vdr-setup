@@ -336,6 +336,7 @@ function piwozi-install-vdradmin {
 		true || return 1
 	fi
 
+	sudo mkdir -p /etc/vdradmin &&
 	sudo bash -c "cat >/etc/vdradmin/vdradmind.conf" <<-EOF &&
 		PASSWORD = linvdr
 		USERNAME = linvdr

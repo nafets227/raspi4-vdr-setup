@@ -50,7 +50,7 @@ function piwozi-updatesysconfig {
 # Debian package git: https://salsa.debian.org/multimedia-team/ffmpeg.git
 # for the official debian package as base.
 # call as pi in its home directory!
-function piwozi-rebuild-fmpeg {
+function piwozi-rebuild-ffmpeg {
 
 	# enable source handling with apt
 	if ! fgrep "Stefan Schallenberg" /etc/apt/sources.list ; then
@@ -490,7 +490,7 @@ function piwozi-patch {
 pushd "$HOME"
 piwozi-updatesysconfig &&
 piwozi-patch &&
-piwozi-rebuild-fmpeg &&
+piwozi-rebuild-ffmpeg &&
 piwozi-install-vdr &&
 piwozi-sysconfig &&
 piwozi-install-vdradmin

@@ -25,7 +25,7 @@ function piwozi-updatesysconfig {
 	[ ! -f /etc/init.d/resizfe2fs_once ] ||
 	sudo rm /etc/init.d/resize2fs_once || return 1
 
-	sudo apt-get install git || return 1
+	sudo apt-get --yes install git || return 1
 
 	if ! [ -d linux ] ; then
 		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --depth 10 &&
@@ -64,11 +64,11 @@ function piwozi-rebuild-fmpeg {
 
 # no longer needed:
 #	# install prereqs of standard Debian package
-#	sudo apt-get build-dep ffmpeg &&
+#	sudo apt-get --yes build-dep ffmpeg &&
 
 	# install needed tools
 	# additional prereq: librtmp
-	sudo apt-get install \
+	sudo apt-get --yes install \
 		autoconf \
 		frei0r-plugins-dev \
 		ladspa-sdk \
@@ -88,7 +88,7 @@ function piwozi-rebuild-fmpeg {
 	# warning about no being able to configure packages can be ignored
 
 	# But for now we compile chromaprint:
-	sudo apt-get install cmake || return 1
+	sudo apt-get --yes install cmake || return 1
 	if ! [ -d chromaprint ] ; then
 		git clone https://github.com/acoustid/chromaprint.git &&
 		cd chromaprint &&
@@ -266,7 +266,7 @@ function piwozi-rebuild-fmpeg {
 		--enable-version3 &&
 	make -j$(nproc) &&
 
-	sudo apt remove \
+	sudo apt --yes remove \
 		ffmpeg \
 		ffmpeg-doc \
 		libavcodec-dev \
@@ -301,7 +301,7 @@ function piwozi-rebuild-fmpeg {
 }
 
 function piwozi-install-vdr {
-	sudo apt install vdr vdr-dev &&
+	sudo apt-get --yes install vdr vdr-dev &&
 
 	# vdr-plugin-softhddevice-drm needs libchromaprint1
 

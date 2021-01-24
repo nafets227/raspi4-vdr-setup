@@ -488,12 +488,17 @@ function piwozi-patch {
 ##### main ####################################################################
 
 pushd "$HOME"
-piwozi-updatesysconfig &&
-piwozi-patch &&
-piwozi-rebuild-ffmpeg &&
-piwozi-install-vdr &&
-piwozi-sysconfig &&
-piwozi-install-vdradmin
+
+if [ "$#" == "0" ] ; then # no parameter given -> defaults to install all
+	piwozi-updatesysconfig &&
+	piwozi-patch &&
+	piwozi-rebuild-ffmpeg &&
+	piwozi-install-vdr &&
+	piwozi-sysconfig &&
+	piwozi-install-vdradmin
+else
+	"$@"
+fi
 
 rc=$?
 popd

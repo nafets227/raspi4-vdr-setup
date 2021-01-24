@@ -300,7 +300,7 @@ function piwozi-rebuild-ffmpeg {
 }
 
 function piwozi-install-vdr {
-	sudo apt-get --yes install vdr vdr-dev &&
+	sudo DEBIAN_FRONTEND=noninteractive apt-get --yes install vdr vdr-dev &&
 
 	# vdr-plugin-softhddevice-drm needs libchromaprint1
 

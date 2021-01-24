@@ -369,6 +369,11 @@ function piwozi-install-vdradmin {
 }
 
 function piwozi-sysconfig {
+	# first enable groupmems without asking even root for its password
+	sudo bash -c "cat >/etc/pam.d/groupmems" <<-EOF &&
+		auth       sufficient pam_rootok.so
+		EOF
+
 	sudo groupmod -g 666 vdr &&
 	sudo usermod -u 666 vdr &&
 

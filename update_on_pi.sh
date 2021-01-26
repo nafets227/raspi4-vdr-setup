@@ -293,6 +293,7 @@ function piwozi-rebuild-ffmpeg {
 		&&
 
 	sudo make install &&
+	cd .. &&
 
 	true || return 1
 
@@ -319,6 +320,7 @@ function piwozi-install-vdr {
 
 	make -j${nproc} &&
 	sudo make install &&
+	cd .. &&
 
 	true || return 1
 
@@ -362,8 +364,8 @@ function piwozi-install-vdradmin {
 		EOF
 	sudo rm -rf /usr/share/vdradmin &&
 	sudo ./install.sh &&
+	cd .. &&
 	true || return 1
-
 
 	return 0
 }

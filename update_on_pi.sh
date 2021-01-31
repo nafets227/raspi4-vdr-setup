@@ -363,7 +363,7 @@ function piwozi-install-vdradmin {
 		WantedBy=multi-user.target
 		EOF
 	sudo rm -rf /usr/share/vdradmin &&
-	sudo ./install.sh &&
+	yes | sudo ./install.sh &&
 	cd .. &&
 	true || return 1
 
@@ -381,6 +381,11 @@ function piwozi-sysconfig {
 
 	sudo groupmems -g audio -l | grep vdr || \
 	sudo groupmems -g audio -a vdr &&
+
+	# @TODO fix existing files owned by vdr with the uid/gid created
+	# at install time
+	# Workaround:
+	sudo chown :vdr /usr/lib/vdr/vdr-shutdown.wrapper &&
 
 	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]
@@ -418,6 +423,10 @@ function piwozi-patch {
 		LABEL="end"
 		EOF
 
+	# copied from
+	# https://github.com/LibreELEC/LibreELEC.tv/raw/master/projects/RPi/filesystem/usr/share/alsa/cards/vc4-hdmi.conf
+	# be aware that version as of 2021-01-31 does not (yet) work, probably
+	# because alsalib is too old
 	sudo bash -c "cat >/usr/share/alsa/cards/vc4-hdmi.conf" <<-"EOF" &&
 		# Configuration for the VC4-HDMI sound card using software IEC958
 		# subframe conversion

@@ -4,8 +4,6 @@
 # for discussion see https://www.vdr-portal.de/forum/index.php?thread/132858-raspberry-pi-4b-unterstützung/
 
 function piwozi-updatesysconfig {
-	sudo SKIP_WARNING=1 rpi-update &&
-
 	# we replace existing /boot/config.txt, default can be restored by deleting and
 	# reinstalling the package raspberrypi-bootloader
 	sudo bash -c "cat >/boot/config.txt" <<-EOF &&
@@ -26,21 +24,6 @@ function piwozi-updatesysconfig {
 	sudo rm /etc/init.d/resize2fs_once || return 1
 
 	sudo apt-get --yes install git || return 1
-
-	if ! [ -d linux ] ; then
-		git clone https://github.com/raspberrypi/linux --branch rpi-5.10.y --depth 10 &&
-		cd linux &&
-		true || return 1
-	else
-		cd linux &&
-		git pull --ff-only &&
-		true || return 1
-	fi
-
-	sudo make headers_install INSTALL_HDR_PATH=/usr &&
-	cd .. &&
-
-	true || return 1
 
 	return 0
 }

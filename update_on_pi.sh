@@ -98,7 +98,7 @@ function piwozi-rebuild-ffmpeg {
 		true || return 1
 	fi
 	cmake -DHAVE_AV_FRAME_ALLOC=1 -DHAVE_AV_FRAME_FREE=1 . &&
-	make -j${nproc} &&
+	make -j$(nproc) &&
 	sudo make install &&
 	cd .. &&
 
@@ -318,7 +318,7 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
-	make -j${nproc} &&
+	make -j$(nproc) &&
 	sudo make install &&
 	cd .. &&
 

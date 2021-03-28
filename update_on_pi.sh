@@ -68,6 +68,11 @@ function piwozi-rebuild-ffmpeg {
 		git clone https://github.com/acoustid/chromaprint.git &&
 		cd chromaprint &&
 		true || return 1
+		# Start cmake first time to workaround a bug when running
+		# in qemu-static-bin
+		# https://bugs.launchpad.net/qemu/+bug/1805913
+		# https://gitlab.kitware.com/cmake/cmake/-/issues/20568
+		cmake -DHAVE_AV_FRAME_ALLOC=1 -DHAVE_AV_FRAME_FREE=1 .
 	else
 		cd chromaprint &&
 		git pull --ff-only &&

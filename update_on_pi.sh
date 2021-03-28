@@ -362,16 +362,8 @@ function piwozi-sysconfig {
 		auth       sufficient pam_rootok.so
 		EOF
 
-	sudo groupmod -g 666 vdr &&
-	sudo usermod -u 666 vdr &&
-
 	sudo groupmems -g audio -l | grep vdr || \
 	sudo groupmems -g audio -a vdr &&
-
-	# @TODO fix existing files owned by vdr with the uid/gid created
-	# at install time
-	# Workaround:
-	sudo chown :vdr /usr/lib/vdr/vdr-shutdown.wrapper &&
 
 	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]

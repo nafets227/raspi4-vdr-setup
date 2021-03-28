@@ -16,13 +16,6 @@ function piwozi-updatesysconfig {
 		# End Stefan Schallenberg 2.1.2021
 		EOF
 
-	# disabble resize root fs that is failing on NFS root
-	sudo update-rc.d resizfe2fs_once remove &&
-	true || return 1
-
-	[ ! -f /etc/init.d/resizfe2fs_once ] ||
-	sudo rm /etc/init.d/resize2fs_once || return 1
-
 	sudo apt-get --yes install git || return 1
 
 	return 0

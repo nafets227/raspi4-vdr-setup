@@ -14,9 +14,9 @@ on your machine, any variant (lite, with Destop, with Desktop and recommended so
 1. start vdr and watch TV or your recordings!
 ## Reporting Issues
 If you find any issue, please start the script with
-
-    bash -c "set -x ; . ./update_on_pi.sh"
-
+```
+bash -c "set -x ; . ./update_on_pi.sh"
+```
 and create an issue in github attaching the log
 # Advanced use
 ## Prepare SD Card on x86
@@ -34,9 +34,9 @@ After installing the qemu packages do the following:
 ## Partial execution
 This step requires some bash script knowledge.
 You can start the script with a parameter, that is the subfunction to exit (look for function in the script), e.g.
-
-    ./update_on_pi.sh piwozi_install_vdr
-
+```
+./update_on_pi.sh piwozi_install_vdr
+```
 It is useful when recovering from previous errors without waiting for all the lengthy procedures that already executed ok.
 ## FFMpeg configuration
 The script configures ffmpeg with the options used in RaspiOS plus, adding some modifications to support Raspi4 Hardware. You could also want to use a "minimal" ffmpeg setup, but this is not supported by the script as of now

@@ -1,12 +1,12 @@
 # raspi4-vdr-setup
 This repository contains a script to automatize the setup of
-[vdr](http://www.tvdr.de) 
+[vdr](http://www.tvdr.de)
 with the plugin
-[softhddevice-drm](https://github.com/zillevdr/vdr-plugin-softhddevice-drm) 
+[softhddevice-drm](https://github.com/zillevdr/vdr-plugin-softhddevice-drm)
 on a Raspberry Pi 4.
 ## How to use
-1. Download and install 
-[RaspiOS](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit) 
+1. Download and install
+[RaspiOS](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)
 on your machine, any variant (lite, with Destop, with Desktop and recommended software) should do.
 1. Backup your system. You REALLY should do this, as the script is partially running with root rights and may destroy your system.
 1. Next, download the update_on_pi.sh and execute it as user pi. It will sudo to root whenever needed and download, compile and install all needed software.

@@ -82,6 +82,7 @@ function piwozi-rebuild-ffmpeg {
 	make -j$(nproc) &&
 	sudo make install &&
 	cd .. &&
+	true || return 1
 
 	# additional prereq: fdk-aac
 	if ! [ -d fdk-aac ] ; then

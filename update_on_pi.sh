@@ -349,7 +349,8 @@ function piwozi-install-vdradmin {
 	cd .. &&
 
 	sudo systemctl daemon-reload &&
-	sudo systemctl enable --now vdradmin-am &&
+	sudo systemctl enable vdradmin-am &&
+	sudo systemctl start vdradmin-am &&
 
 	true || return 1
 

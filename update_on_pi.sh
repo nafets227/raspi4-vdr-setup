@@ -145,6 +145,10 @@ function piwozi-rebuild-ffmpeg {
 		git pull --ff-only &&
 		true || return 1
 	fi
+	sed -i 's#<drm/drm_fourcc.h#<libdrm/drm_fourcc.h#' \
+		libavutil/hwcontext_drm.c \
+		|| return 1
+
 #	       	--libdir=/usr/lib/arm-linux-gnueabihf
 #	       	--cpu=arm1176jzf-s
 #	       	--arch=arm

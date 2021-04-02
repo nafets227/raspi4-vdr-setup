@@ -16,7 +16,7 @@ function piwozi-updatesysconfig {
 		# End Stefan Schallenberg 2.1.2021
 		EOF
 
-	sudo apt-get --yes install git || return 1
+	sudo apt-get --yes install git || return 1
 
 	return 0
 }

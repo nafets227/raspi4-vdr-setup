@@ -325,9 +325,9 @@ function piwozi-install-libcec {
 }
 
 function piwozi-install-vdr {
-	sudo DEBIAN_FRONTEND=noninteractive apt-get --yes install vdr vdr-dev &&
-
-	# vdr-plugin-softhddevice-drm needs libchromaprint1
+	sudo DEBIAN_FRONTEND=noninteractive apt-get --yes install \
+		vdr vdr-dev \
+		libpugixml-dev && \
 
 	true || return 1
 
@@ -342,10 +342,25 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
+
 	make -j$(nproc) &&
 	sudo make install &&
 	cd .. &&
+	true || return 1
 
+	if ! [ -d vdr-plugin-cecremote ] ; then
+		git clone https://git.uli-eckhardt.de/vdr-plugin-cecremote.git &&
+		cd vdr-plugin-cecremote &&
+		true || return 1
+	else
+		cd vdr-plugin-cecremote &&
+		git pull --ff-only &&
+		true || return 1
+	fi
+
+	make -j$(nproc) &&
+	sudo make install &&
+	cd .. &&
 	true || return 1
 
 	return 0
@@ -399,6 +414,8 @@ function piwozi-sysconfig {
 	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]
 		-a iec958
+
+		[cecremote]
 		EOF
 
 	sudo bash -c "cat >/etc/sudoers.d/011_vdrshutdown" <<-EOF &&

@@ -372,6 +372,7 @@ function piwozi-sysconfig {
 
 	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]
+		-a iec958
 		EOF
 
 	sudo bash -c "cat >/etc/sudoers.d/011_vdrshutdown" <<-EOF &&
@@ -392,105 +393,12 @@ function piwozi-sysconfig {
 	return 0
 }
 
-function piwozi-patch {
-	sudo bash -c "cat >/lib/udev/rules.d/91-pulseaudio-rpi.rules" <<-EOF &&
-		SUBSYSTEM!="sound*", GOTO="end"
-		ACTION!="change", GOTO="end"
-		KERNEL!="card*", GOTO="end"
-		ENV{SOUND_FORM_FACTOR}!="internal", GOTO="end"
-
-		ATTRS{id}=="b1", ENV{PULSE_PROFILE_SET}="rpi-hdmi.conf", GOTO="end"
-		ATTRS{id}=="b2", ENV{PULSE_PROFILE_SET}="rpi-hdmi.conf", GOTO="end"
-		ATTRS{id}=="Headphones", ENV{PULSE_PROFILE_SET}="rpi-analog.conf", GOTO="end"
-
-		LABEL="end"
-		EOF
-
-	# copied from
-	# https://github.com/LibreELEC/LibreELEC.tv/raw/master/projects/RPi/filesystem/usr/share/alsa/cards/vc4-hdmi.conf
-	# be aware that version as of 2021-01-31 does not (yet) work, probably
-	# because alsalib is too old
-	sudo bash -c "cat >/usr/share/alsa/cards/vc4-hdmi.conf" <<-"EOF" &&
-		# Configuration for the VC4-HDMI sound card using software IEC958
-		# subframe conversion
-
-		<confdir:pcm/hdmi.conf>
-		vc4-hdmi.pcm.hdmi.0 {
-			@args [ CARD AES0 AES1 AES2 AES3 ]
-			@args.CARD {
-				type string
-			}
-			@args.AES0 {
-				type integer
-			}
-			@args.AES1 {
-				type integer
-			}
-			@args.AES2 {
-				type integer
-			}
-			@args.AES3 {
-				type integer
-			}
-			type iec958
-			slave {
-				format IEC958_SUBFRAME_LE
-				pcm {
-					type hooks
-					slave.pcm {
-						type hw
-						card $CARD
-						device 0
-					}
-					hooks.0 {
-						type ctl_elems
-						hook_args [
-						{
-							name "IEC958 Playback Default"
-							optional true
-							lock true
-							preserve true
-							value [ $AES0 $AES1 $AES2 $AES3 ]
-						}
-						]
-					}
-				}
-			}
-			status [ $AES0 $AES1 $AES2 $AES3 ]
-		}
-
-		# default with plug
-		vc4-hdmi.pcm.default {
-			@args [ CARD ]
-			@args.CARD {
-				type string
-			}
-			type plug
-			slave.pcm {
-				type softvol
-				slave.pcm {
-					@func concat
-					strings [ "hdmi:" $CARD ]
-				}
-				control {
-					name "PCM Playback Volume"
-					card $CARD
-				}
-			}
-		}
-		EOF
-	true || return 1
-
-	return 0
-}
-
 ##### main ####################################################################
 
 pushd "$HOME"
 
 if [ "$#" == "0" ] ; then # no parameter given -> defaults to install all
 	piwozi-updatesysconfig &&
-	piwozi-patch &&
 	piwozi-rebuild-ffmpeg &&
 	piwozi-install-vdr &&
 	piwozi-sysconfig &&

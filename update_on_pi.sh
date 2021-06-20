@@ -314,18 +314,9 @@ function piwozi-install-vdr {
 }
 
 function piwozi-install-vdradmin {
-	if ! [ -d vdradmin-am ] ; then
-		git clone https://projects.vdr-developer.org/git/vdradmin-am.git &&
-		cd vdradmin-am &&
-		true || return 1
-	else
-		cd vdradmin-am &&
-		git pull --ff-only &&
-		true || return 1
-	fi
+	sudo DEBIAN_FRONTEND=noninteractive apt-get --yes install vdradmin-am &&
 
-	sudo mkdir -p /etc/vdradmin &&
-	sudo bash -c "cat >/etc/vdradmin/vdradmind.conf" <<-EOF &&
+	sudo bash -c "cat >/var/lib/vdradmin-am/vdradmind.conf" <<-EOF &&
 		PASSWORD = linvdr
 		USERNAME = linvdr
 		VDRCONFDIR = /var/lib/vdr
@@ -342,15 +333,12 @@ function piwozi-install-vdradmin {
 		[Service]
 		# run as root user to enable creating needed directories.
 		# User=vdr
-		ExecStartPre=mkdir -p /run/vdradmin /etc/vdradmin /var/cache/vdradmin /var/log/vdradmin /var/run/vdradmin
+		# ExecStartPre=mkdir -p /run/vdradmin /etc/vdradmin /var/cache/vdradmin /var/log/vdradmin /var/run/vdradmin
 		ExecStart=/usr/bin/vdradmind -n
 
 		[Install]
 		WantedBy=multi-user.target
 		EOF
-	sudo rm -rf /usr/share/vdradmin &&
-	yes | sudo ./install.sh &&
-	cd .. &&
 
 	sudo systemctl daemon-reload &&
 	sudo systemctl enable vdradmin-am &&

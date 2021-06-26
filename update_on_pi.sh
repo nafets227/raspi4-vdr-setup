@@ -285,6 +285,45 @@ function piwozi-rebuild-ffmpeg {
 	return 0
 }
 
+function piwozi-install-libcec {
+	# dont use standard libcec, since too old and not enable Linux API:
+	# sudo apt-get --yes install libcec-dev cec-utils libp8-platform-dev
+
+	sudo apt-get --yes install \
+		cmake \
+		libp8-platform-dev \
+		libudev-dev \
+		libxrandr-dev \
+		python-dev \
+		swig &&
+	true || return 1
+
+	if ! [ -d libcec ] ; then
+		git clone https://github.com/Pulse-Eight/libcec.git --depth 10 &&
+		cd libcec &&
+		true || return 1
+	else
+		cd libcec &&
+		git pull --ff-only &&
+		true || return 1
+	fi
+
+	mkdir -p build &&
+	cd build &&
+	# retry cmake 2 times, dont know why 1st time fails.
+	( CMAKE_PREFIX_PATH=/usr/lib/arm-linux-gnueabihf/p8-platform \
+	cmake -DHAVE_LINUX_API=1 .. ||
+	CMAKE_PREFIX_PATH=/usr/lib/arm-linux-gnueabihf/p8-platform \
+	cmake -DHAVE_LINUX_API=1 .. ) &&
+	make -j$(nproc) &&
+	sudo make install &&
+	cd ../.. &&
+
+	true || return 1
+
+	return 0
+}
+
 function piwozi-install-vdr {
 	sudo DEBIAN_FRONTEND=noninteractive apt-get --yes install vdr vdr-dev &&
 
@@ -387,6 +426,7 @@ pushd "$HOME"
 if [ "$#" == "0" ] ; then # no parameter given -> defaults to install all
 	piwozi-updatesysconfig &&
 	piwozi-rebuild-ffmpeg &&
+	piwozi-install-libcec &&
 	piwozi-install-vdr &&
 	piwozi-sysconfig &&
 	piwozi-install-vdradmin

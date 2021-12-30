@@ -20,17 +20,6 @@ function piwozi-verify-os {
 }
 
 function piwozi-updatesysconfig {
-	# we replace existing /boot/config.txt, default can be restored by deleting and
-	# reinstalling the package raspberrypi-bootloader
-	sudo bash -c "cat >/boot/config.txt" <<-EOF &&
-		# Version from nafets227/raspi-by Stefan Schallenberg install script
-		#### comment dtoverlay=vc4-fkms-3d above
-		dtoverlay=vc4-kms-v3d-pi4,cma-512
-		dtoverlay=rpivid-v4l2
-		disable_fw_kms_setup=1
-		# End Version from nafets227/raspi-by Stefan Schallenberg install script
-		EOF
-
 	sudo apt-get --yes install \
 		git \
 		ffmpeg \

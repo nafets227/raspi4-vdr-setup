@@ -121,7 +121,7 @@ function piwozi-sysconfig {
 
 	sudo bash -c "cat >/etc/vdr/conf.d/99-nafets.conf" <<-EOF &&
 		[softhddevice-drm]
-		-a iec958
+		-a default:CARD=vc4hdmi0
 
 		[cecremote]
 		EOF

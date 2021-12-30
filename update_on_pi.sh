@@ -3,6 +3,22 @@
 # Setup Pi4 with vdr and latest softhddevice.drm plugin
 # for discussion see https://www.vdr-portal.de/forum/index.php?thread/132858-raspberry-pi-4b-unterstützung/
 
+function piwozi-verify-os {
+	. /etc/os-release || return 1
+
+	if [ "$ID" != "raspbian" ] ; then
+		printf "Error: Unsupported Linux Distribution %s (only raspbian supported)\n" \
+			"$ID"
+		return 1
+	elif [ "$VERSION_ID" != "11" ] ; then
+		printf "Error. Unsupported raspbian version %s (only 11 supported)\n" \
+			"$VERSION_ID"
+		return 1
+	fi
+
+	return 0
+}
+
 function piwozi-updatesysconfig {
 	# we replace existing /boot/config.txt, default can be restored by deleting and
 	# reinstalling the package raspberrypi-bootloader
@@ -180,6 +196,7 @@ function piwozi-sysconfig {
 pushd "$HOME"
 
 if [ "$#" == "0" ] ; then # no parameter given -> defaults to install all
+	piwozi-verify-os &&
 	piwozi-updatesysconfig &&
 	piwozi-install-libcec &&
 	piwozi-install-vdr &&

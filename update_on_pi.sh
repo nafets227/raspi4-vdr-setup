@@ -45,7 +45,7 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
-  	if ! [ -d vdrctl ] ; then
+	if ! [ -d vdrctl ] ; then
 		git clone https://github.com/VDR4Arch/vdrctl.git &&
 		cd vdrctl &&
 		true || return 1

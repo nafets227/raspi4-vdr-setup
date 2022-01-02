@@ -39,10 +39,11 @@ function piwozi-install-vdr {
 		libpugixml-dev && \
 	true || return 1
 
-  	if ! [ -d /var/lib/video ] ; then
-      sudo mkdir /var/lib/video/
-      sudo chown vdr:vdr /var/lib/video/
-   fi
+	if ! [ -d /var/lib/video ] ; then
+		sudo mkdir /var/lib/video/ &&
+		sudo chown vdr:vdr /var/lib/video/ &&
+		true || return 1
+	fi
 
   	if ! [ -d vdrctl ] ; then
 		git clone https://github.com/VDR4Arch/vdrctl.git &&
@@ -54,11 +55,10 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
-   sudo cp vdrctl /usr/bin/
-   sudo cp bash-completion/vdrctl /etc/bash_completion.d/
+	sudo cp vdrctl /usr/bin/ &&
+	sudo cp bash-completion/vdrctl /etc/bash_completion.d/ &&
 	cd .. &&
 	true || return 1
-
 
 	if ! [ -d vdr-plugin-softhddevice-drm ] ; then
 		git clone https://github.com/zillevdr/vdr-plugin-softhddevice-drm.git --depth 10 &&
@@ -74,7 +74,6 @@ function piwozi-install-vdr {
 	sudo make install &&
 	cd .. &&
 	true || return 1
-
 
 	if ! [ -d vdr-plugin-cecremote ] ; then
 		git clone https://git.uli-eckhardt.de/vdr-plugin-cecremote.git &&
@@ -138,19 +137,18 @@ function piwozi-sysconfig {
 
 	sudo groupmems -g audio -l | grep vdr || \
 	sudo groupmems -g audio -a vdr &&
-   sudo bash -c "mkdir /etc/vdr/conf.avail" &&
+	sudo bash -c "mkdir /etc/vdr/conf.avail" &&
 
-   sudo bash -c "cat >/etc/vdr/conf.avail/softhddevice-drm.conf" <<-EOF &&
+	sudo bash -c "cat >/etc/vdr/conf.avail/softhddevice-drm.conf" <<-EOF &&
 		[softhddevice-drm]
 		-a default:CARD=vc4hdmi0
 		EOF
+	sudo bash -c "ln -s ../conf.avail/softhddevice-drm.conf /etc/vdr/conf.d/50-softhddevice-drm.conf" &&
 
 	sudo bash -c "cat >/etc/vdr/conf.avail/cecremote.conf" <<-EOF &&
 		[cecremote]
 		EOF
-
-   sudo bash -c "ln -s ../conf.avail/softhddevice-drm.conf /etc/vdr/conf.d/50-softhddevice-drm.conf" &&
-   sudo bash -c "ln -s ../conf.avail/cecremote.conf /etc/vdr/conf.d/50-cecremote.conf" &&
+	sudo bash -c "ln -s ../conf.avail/cecremote.conf /etc/vdr/conf.d/50-cecremote.conf" &&
 
 	sudo bash -c "cat >/etc/sudoers.d/011_vdrshutdown" <<-EOF &&
 		vdr ALL=(ALL) NOPASSWD: ALL

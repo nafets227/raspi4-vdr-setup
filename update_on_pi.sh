@@ -102,11 +102,20 @@ function piwozi-install-vdradmin {
 		WantedBy=multi-user.target
 		EOF
 
-	sudo systemctl daemon-reload &&
-	sudo systemctl enable vdradmin-am &&
-	sudo systemctl start vdradmin-am &&
-
 	true || return 1
+
+	local piwozi_live=${LIVE:-1}
+
+	if [ "$piwozi_live" != 1 ] ; then
+		# running in chroot
+		sudo systemctl enable vdradmin-am || return 1
+	else
+		# not running in chroot
+		sudo systemctl daemon-reload &&
+		sudo systemctl enable vdradmin-am &&
+		sudo systemctl start vdradmin-am &&
+		true || return 1
+	fi
 
 	return 0
 }

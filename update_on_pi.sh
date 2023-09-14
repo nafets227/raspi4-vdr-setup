@@ -50,8 +50,9 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
+	local piwozi_nproc=${NPROC:-$(nproc)} &&
 
-	make -j$(nproc) &&
+	make -j$piwozi_nproc &&
 	sudo make install &&
 	cd .. &&
 	true || return 1
@@ -66,7 +67,7 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
-	make -j$(nproc) &&
+	make -j$piwozi_nproc &&
 	sudo make install &&
 	cd .. &&
 	true || return 1

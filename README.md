@@ -14,12 +14,12 @@ on your machine, any variant (lite, with Destop, with Desktop and recommended so
 1. start vdr and watch TV or your recordings!
 ## Reporting Issues
 If you find any issue, please start the script with
-```
+``` bash
 bash -c "set -x ; . ./update_on_pi.sh"
 ```
-and create an issue in github attaching the log
-# Advanced use
-## Prepare SD Card on x86
+and create an issue in GitHub attaching the log
+## Advanced use
+### Prepare SD Card on x86
 Using qemu-static-bin and binfmt-qemu packages on a box running Linux x86 you can prepare a SD-Card (or even  NFS root) without touching your Raspi.
 After installing the qemu packages do the following:
 1. download root.tar.xz and boot.tar.xz from the [RaspiOS Download Page](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)
@@ -31,16 +31,16 @@ After installing the qemu packages do the following:
 1. call update_on_pi.sh
 1. exit from chroot
 1. umnount /mnt and move it to your raspi4
-## Partial execution
+### Partial execution
 This step requires some bash script knowledge.
 You can start the script with a parameter, that is the subfunction to exit (look for function in the script), e.g.
-```
+``` bash
 ./update_on_pi.sh piwozi_install_vdr
 ```
-It is useful when recovering from previous errors without waiting for all the lengthy procedures that already executed ok.
-## FFMpeg configuration
+It is useful when recovering from previous errors without waiting for all the lengthy procedures that already executed OK.
+### FFMpeg configuration
 The script configures ffmpeg with the options used in RaspiOS plus, adding some modifications to support Raspi4 Hardware. You could also want to use a "minimal" ffmpeg setup, but this is not supported by the script as of now
-# References and Contributions
+## References and Contributions
 This script just puts together the wonderful work of a lot of people, listed below in the order of installation
 1. [rpi-update](https://github.com/Hexxeh/rpi-update)
 to update RaspiOS Kernel to the latest development version 5.10.y

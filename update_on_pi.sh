@@ -52,7 +52,7 @@ function piwozi-install-vdr {
 
 	local piwozi_nproc=${NPROC:-$(nproc)} &&
 
-	make -j$piwozi_nproc &&
+	make -j"$piwozi_nproc" &&
 	sudo make install &&
 	cd .. &&
 	true || return 1
@@ -67,7 +67,7 @@ function piwozi-install-vdr {
 		true || return 1
 	fi
 
-	make -j$piwozi_nproc &&
+	make -j"$piwozi_nproc" &&
 	sudo make install &&
 	cd .. &&
 	true || return 1
@@ -156,7 +156,7 @@ function piwozi-sysconfig {
 
 ##### main ####################################################################
 
-pushd "$HOME"
+pushd "$HOME" || exit 1
 
 if [ "$#" == "0" ] ; then # no parameter given -> defaults to install all
 	piwozi-verify-os &&
@@ -169,7 +169,7 @@ else
 fi
 
 rc=$?
-popd
+popd || rc=2
 
 if [ "$rc" -eq 0 ] ; then
 	printf "==== %s ended successfully =====\n" "$0"

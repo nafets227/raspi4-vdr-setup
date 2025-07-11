@@ -1,3 +1,7 @@
+# UNMAINTAINED
+
+This repor has been closed, since I switched my raspi to version 5 using archlinux for arm and aur packages, especially vdr-softhddevice-drm-gles.
+
 # raspi4-vdr-setup
 This repository contains a script to automatize the setup of
 [vdr](http://www.tvdr.de)
